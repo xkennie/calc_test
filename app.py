@@ -1,5 +1,5 @@
 import pandas as pd
-import joblib
+#import joblib
 import pickle
 import numpy as np
 import category_encoders as ce
@@ -89,7 +89,9 @@ def calculator_retention(df, #data
     
 
 #warnings.filterwarnings('ignore')
-lgb_model = joblib.load('lgb.pkl')
+#lgb_model = joblib.load('lgb.pkl')
+with open('lgb.pkl', 'rb') as f:
+    lgb_model = pickle.load(f)
 with open('one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
     
