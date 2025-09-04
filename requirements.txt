@@ -1,3 +1,4 @@
 pickle
 pandas
 numpy
+category_encoders
