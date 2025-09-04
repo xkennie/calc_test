@@ -13,7 +13,8 @@ def calculator_retention(df, #data
                         total_cost, #Стоимость доставки
                         cancel_share, #Доля отмен
                         late_min, #Опоздания, в минутах
-                        late_share, #Доля заказов с опозданием
+                        late_share,
+                        retailer_category,#Доля заказов с опозданием
                         model,#model+encoder
                         ohe):
     data = df.copy()
@@ -47,9 +48,22 @@ def calculator_retention(df, #data
 
     data['os'] = np.random.choice(['android', 'ios', 'windows'],
                                                 size=data.shape[0], p=[0.54, 0.41, 0.05])
+    if retailer_category == 'all':
+      data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
+                                                  size=data.shape[0], p=[0.7,0.21, 0.09])
+      data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
+                                                size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
 
-    data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
-                                                size=data.shape[0], p=[0.7,0.21, 0.09])
+    elif retailer_category == 'rte':
+      data['retailer_category_name'] = retailer_category
+      data['retailer_name'] = np.random.choice(['вкусно - и точка', "rostic's", 'Прочее'],
+                                                size=data.shape[0], p=[0.175, 0.15, 0.675])
+    elif retailer_category == 'grocery':
+      data['retailer_category_name'] = retailer_category
+      data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'Прочее'],
+                                                size=data.shape[0], p=[0.39, 0.2, 0.1, 0.31])
+    
+
 
     data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
                                                 size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
