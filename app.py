@@ -133,7 +133,7 @@ if uploaded_file is not None:
     cancel_share_setting = st.text_input("Таргет доли отмен", value = 0.05)
     
     if st.button("Выполнить расчёт"):
-        r, c = calculator_retention(df = df, #data 
+      r, c = calculator_retention(df = df, #data 
                         eta = eta_setting, #ETA
                         cte = cte_setting, #СТЕ (оставить распределение из выборки, можно 86ести руками)
                         total_cost = total_cost_setting, #Стоимость доставки
