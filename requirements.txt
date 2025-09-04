@@ -1,3 +1,4 @@
+lightgbm
 pickle
 pandas
 numpy
