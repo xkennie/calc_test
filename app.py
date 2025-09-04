@@ -133,12 +133,12 @@ if uploaded_file is not None:
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
         st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
     with col2:
-      eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 35, key = 'eta_comp')
-      cte_setting_c2 = st.text_input("Таргет CTE", value = 40, key = 'cte_comp')
-      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания", value = 10, key = 'late_minutes_comp')
-      late_share_setting_c2 = st.text_input("Таргет доли опозданий", value = 0.1, key = 'late_share_comp')
-      total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 100, key = 'total_cost_comp')
-      cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.05, key = 'cancel_share_comp')
+      eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 30, key = 'eta_comp')
+      cte_setting_c2 = st.text_input("Таргет CTE", value = 35, key = 'cte_comp')
+      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания", value = 15, key = 'late_minutes_comp')
+      late_share_setting_c2 = st.text_input("Таргет доли опозданий", value = 0.05, key = 'late_share_comp')
+      total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 70, key = 'total_cost_comp')
+      cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.07, key = 'cancel_share_comp')
         
       if st.button("Выполнить расчёт: сравнение"):
         r2, c2 = calculator_retention(df = df, #data 
