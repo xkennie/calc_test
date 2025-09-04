@@ -109,25 +109,47 @@ if uploaded_file is not None:
 
     df = pd.read_csv(uploaded_file, sep=",")
 
-    st.write("Загруженный набор данных:")
-    st.dataframe(df)
+    #st.write("Загруженный набор данных:")
+    #st.dataframe(df)
+    col1, col2 = st.columns(2)
+    with col1:
+      eta_setting_c1 = st.text_input("Таргет правой границы ЕТА", value = 35)
+      cte_setting_c1 = st.text_input("Таргет CTE", value = 40)
+      late_minutes_setting_c1 = st.text_input("Таргет минут опоздания", value = 10)
+      late_share_setting_c1 = st.text_input("Таргет доли опозданий", value = 0.1)
+      total_cost_setting_c1 = st.text_input("Таргет стоимости доставки", value = 100)
+      cancel_share_setting_c1 = st.text_input("Таргет доли отмен", value = 0.05)
+      
+      if st.button("Выполнить расчёт: основной"):
+        r1, c1 = calculator_retention(df = df, #data 
+                          eta = eval(eta_setting_c1), #ETA
+                          cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
+                          total_cost = eval(total_cost_setting_c1), #Стоимость доставки
+                          cancel_share = eval(cancel_share_setting_c1), #Доля отмен
+                          late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
+                          late_share = eval(late_share_setting_c1), #Доля заказов с опозданием
+                          model = lgb_model,#model+encoder
+                          ohe = ohe)
+        st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
+        st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
+    with col2:
+      eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 35)
+      cte_setting_c2 = st.text_input("Таргет CTE", value = 40)
+      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания", value = 10)
+      late_share_setting_c2 = st.text_input("Таргет доли опозданий", value = 0.1)
+      total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 100)
+      cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.05)
+        
+      if st.button("Выполнить расчёт: сравнение"):
+        r2, c2 = calculator_retention(df = df, #data 
+                          eta = eval(eta_setting_c2), #ETA
+                          cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
+                          total_cost = eval(total_cost_setting_c2), #Стоимость доставки
+                          cancel_share = eval(cancel_share_setting_c2), #Доля отмен
+                          late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
+                          late_share = eval(late_share_setting_c2), #Доля заказов с опозданием
+                          model = lgb_model,#model+encoder
+                          ohe = ohe)
+        st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
+        st.write(f"Ожидаемый CPO системы: {round(c2, 1)}₽")
 
-    eta_setting = st.text_input("Таргет правой границы ЕТА", value = 35)
-    cte_setting = st.text_input("Таргет CTE", value = 40)
-    late_minutes_setting = st.text_input("Таргет минут опоздания", value = 10)
-    late_share_setting = st.text_input("Таргет доли опозданий", value = 0.1)
-    total_cost_setting = st.text_input("Таргет стоимости доставки", value = 100)
-    cancel_share_setting = st.text_input("Таргет доли отмен", value = 0.05)
-    
-    if st.button("Выполнить расчёт"):
-      r, c = calculator_retention(df = df, #data 
-                        eta = eval(eta_setting), #ETA
-                        cte = eval(cte_setting), #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                        total_cost = eval(total_cost_setting), #Стоимость доставки
-                        cancel_share = eval(cancel_share_setting), #Доля отмен
-                        late_min = eval(late_minutes_setting), #Опоздания, в минутах
-                        late_share = eval(late_share_setting), #Доля заказов с опозданием
-                        model = lgb_model,#model+encoder
-                        ohe = ohe)
-      st.write(f"Ожидаемый ретеншн при заданных вводных: {r}%")
-      st.write(f"Ожидаемый CPO системы: {round(c, 1)}₽")
