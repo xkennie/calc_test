@@ -121,12 +121,12 @@ if uploaded_file is not None:
     
     if st.button("Выполнить расчёт"):
       r, c = calculator_retention(df = df, #data 
-                        eta = eta_setting, #ETA
-                        cte = cte_setting, #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                        total_cost = total_cost_setting, #Стоимость доставки
-                        cancel_share = cancel_share_setting, #Доля отмен
-                        late_min = late_min_setting, #Опоздания, в минутах
-                        late_share = late_share_setting, #Доля заказов с опозданием
+                        eta = eval(eta_setting), #ETA
+                        cte = eval(cte_setting), #СТЕ (оставить распределение из выборки, можно 86ести руками)
+                        total_cost = eval(total_cost_setting), #Стоимость доставки
+                        cancel_share = eval(cancel_share_setting), #Доля отмен
+                        late_min = eval(late_minutes_setting), #Опоздания, в минутах
+                        late_share = eval(late_share_setting), #Доля заказов с опозданием
                         model = lgb_model,#model+encoder
                         ohe = ohe)
       st.write(f"Ожидаемый ретеншн при заданных вводных: {r}%")
