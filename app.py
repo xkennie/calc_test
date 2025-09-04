@@ -28,31 +28,31 @@ def calculator_retention(df, #data
         data["total_cost"] = total_cost/100
     if cancel_share > 0: 
         data["cancel_tag"] = np.random.choice([' ', 'Логистические отмены', 'Прочее'],
-                                                size=1000000, p=[no_cancel,log_cancel,other_cancel])
+                                                size=data.shape[0], p=[no_cancel,log_cancel,other_cancel])
     if late_share > 0:
         data["late"] = np.random.choice([0, late_min],
-                                                size=1000000, p=[1-late_share,late_share])
+                                                size=data.shape[0], p=[1-late_share,late_share])
 
 
     #X_test_new['repeated_or_new'] = np.random.choice(['repeated', 'new'], size=1000000, p=[0.97,0.03])
 
     data['device_type'] = np.random.choice(['mobile', 'desktop'],
-                                                size=1000000, p=[0.96,0.04])
+                                                size=data.shape[0], p=[0.96,0.04])
 
     data['prime_flg'] = np.random.choice([1, 0],
-                                                size=1000000, p=[0.43,0.57])
+                                                size=data.shape[0], p=[0.43,0.57])
 
     data['loyal_user_flg'] = np.random.choice(['loyal', 'not_loyal'],
-                                                size=1000000, p=[0.66,0.34])
+                                                size=data.shape[0], p=[0.66,0.34])
 
     data['os'] = np.random.choice(['android', 'ios', 'windows'],
-                                                size=1000000, p=[0.54, 0.41, 0.05])
+                                                size=data.shape[0], p=[0.54, 0.41, 0.05])
 
     data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
-                                                size=1000000, p=[0.7,0.21, 0.09])
+                                                size=data.shape[0], p=[0.7,0.21, 0.09])
 
     data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
-                                                size=1000000, p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
+                                                size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
 
     data["tenant_id"] = 'sbermarket'
 
