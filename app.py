@@ -120,7 +120,7 @@ if uploaded_file is not None:
       total_cost_setting_c1 = st.text_input("Таргет стоимости доставки", value = 100, key = 'total_cost_main')
       cancel_share_setting_c1 = st.text_input("Таргет доли отмен", value = 0.05, key = 'cancel_share_main')
       
-      if st.button("Выполнить расчёт: основной"):
+      if st.checkbox("Выполнить расчёт: основной"):
         r1, c1 = calculator_retention(df = df, #data 
                           eta = eval(eta_setting_c1), #ETA
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
@@ -140,7 +140,7 @@ if uploaded_file is not None:
       total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 70, key = 'total_cost_comp')
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.07, key = 'cancel_share_comp')
         
-      if st.button("Выполнить расчёт: сравнение"):
+      if st.checkbox("Выполнить расчёт: сравнение"):
         r2, c2 = calculator_retention(df = df, #data 
                           eta = eval(eta_setting_c2), #ETA
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
