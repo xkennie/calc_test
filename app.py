@@ -5,7 +5,6 @@ import pickle
 import numpy as np
 import category_encoders as ce
 import streamlit as st
-import lightgbm as lgb
 from category_encoders.one_hot import OneHotEncoder
 
 def calculator_retention(df, #data 
