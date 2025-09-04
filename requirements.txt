@@ -1,5 +1,7 @@
 lightgbm
-numpy
 category_encoders
-pandas==1.2.3
+pandas==1.3.5
+numpy
+
+
 
