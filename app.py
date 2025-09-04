@@ -107,20 +107,7 @@ if uploaded_file is not None:
     # Определяем тип файла по расширению
     file_name = uploaded_file.name.lower()
 
-    if file_name.endswith('.csv'):
-        # Настройки для CSV файлов
-        sep_sign = st.selectbox(
-            "Выберите разделитель",
-            (";", ",", " ", "|"), index=0)
-
-        decimal_sign = st.selectbox(
-            "Выберите отделитель дробной части",
-            (".", ","), index=1)
-
-        df = pd.read_csv(uploaded_file, sep=sep_sign, decimal=decimal_sign)
-
-    elif file_name.endswith(('.xls', '.xlsx')):
-        df = pd.read_excel(uploaded_file)
+    df = pd.read_csv(uploaded_file, sep=",")
 
     st.write("Загруженный набор данных:")
     st.dataframe(df)
