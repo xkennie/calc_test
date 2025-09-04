@@ -130,4 +130,4 @@ if uploaded_file is not None:
                         model = lgb_model,#model+encoder
                         ohe = ohe)
       st.write(f"Ожидаемый ретеншн при заданных вводных: {r}%")
-      st.write(f"Ожидаемый CPO системы: {c}₽")
+      st.write(f"Ожидаемый CPO системы: {round(c, 1)}₽")
