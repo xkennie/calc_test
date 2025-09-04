@@ -1,4 +1,3 @@
-joblib==1.4.2
 pickle
 pandas
 numpy
