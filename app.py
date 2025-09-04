@@ -17,8 +17,6 @@ def calculator_retention(df, #data
                         late_share, #Доля заказов с опозданием
                         model,#model+encoder
                         ohe):
-    import pandas as pd
-    import numpy as np
     data = df.copy()
     log_cancel = cancel_share*0.6
     other_cancel = cancel_share*0.4
