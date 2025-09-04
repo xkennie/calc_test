@@ -61,6 +61,7 @@ def calculator_retention(df, #data
     data = ohe.transform(data)
 
     y_test_pred = model.predict(data)
+    retens = round(100*y_test_pred.mean(), 1)
     print(f"Ожидаемый ретеншн при заданных вводных: {round(100*y_test_pred.mean(), 1)}%")
     
     orders = 1600000
@@ -84,7 +85,7 @@ def calculator_retention(df, #data
         total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
     
     print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
-    
+    return retens, total_cpo
     
 
 #warnings.filterwarnings('ignore')
@@ -132,12 +133,14 @@ if uploaded_file is not None:
     cancel_share_setting = st.text_input("Таргет доли отмен", value = 0.05)
     
     if st.button("Выполнить расчёт"):
-        calculator_retention(df = df, #data 
+        r, c = calculator_retention(df = df, #data 
                         eta = eta_setting, #ETA
                         cte = cte_setting, #СТЕ (оставить распределение из выборки, можно 86ести руками)
                         total_cost = total_cost_setting, #Стоимость доставки
                         cancel_share = cancel_share_setting, #Доля отмен
                         late_min = late_min_setting, #Опоздания, в минутах
                         late_share = late_share_setting, #Доля заказов с опозданием
-                        model,#model+encoder
-                        ohe)
+                        model = lgb_model,#model+encoder
+                        ohe = ohe)
+      st.write(f"Ожидаемый ретеншн при заданных вводных: {r}%")
+      st.write(f"Ожидаемый CPO системы: {c}₽")
