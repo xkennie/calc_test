@@ -133,7 +133,7 @@ if uploaded_file is not None:
       late_share_setting_c1 = st.text_input("Таргет доли опозданий", value = 0.1, key = 'late_share_main')
       total_cost_setting_c1 = st.text_input("Таргет стоимости доставки", value = 100, key = 'total_cost_main')
       cancel_share_setting_c1 = st.text_input("Таргет доли отмен", value = 0.05, key = 'cancel_share_main')
-      
+      category_setting_c1 = st.text_input("Категория ритейлера", value = "rte", key = 'category_main')
       if st.checkbox("Выполнить расчёт: основной"):
         r1, c1 = calculator_retention(df = df, #data 
                           eta = eval(eta_setting_c1), #ETA
@@ -141,7 +141,8 @@ if uploaded_file is not None:
                           total_cost = eval(total_cost_setting_c1), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c1), #Доля отмен
                           late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
-                          late_share = eval(late_share_setting_c1), #Доля заказов с опозданием
+                          late_share = eval(late_share_setting_c1), 
+                          retailer_category = category_setting_c1,
                           model = lgb_model,#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
@@ -153,7 +154,7 @@ if uploaded_file is not None:
       late_share_setting_c2 = st.text_input("Таргет доли опозданий", value = 0.05, key = 'late_share_comp')
       total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 70, key = 'total_cost_comp')
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.07, key = 'cancel_share_comp')
-        
+      category_setting_c2 = st.text_input("Категория ритейлера", value = "grocery", key = 'category_comp')  
       if st.checkbox("Выполнить расчёт: сравнение"):
         r2, c2 = calculator_retention(df = df, #data 
                           eta = eval(eta_setting_c2), #ETA
@@ -161,7 +162,8 @@ if uploaded_file is not None:
                           total_cost = eval(total_cost_setting_c2), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c2), #Доля отмен
                           late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
-                          late_share = eval(late_share_setting_c2), #Доля заказов с опозданием
+                          late_share = eval(late_share_setting_c2),
+                          retailer_category = category_setting_c1,
                           model = lgb_model,#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
