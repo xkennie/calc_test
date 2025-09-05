@@ -148,6 +148,7 @@ if uploaded_file is not None:
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
         st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
+        st.write(f"*CPO считается в тестовом режиме")
     with col2:
       category_setting_c2 = st.text_input("Категория ритейлера", value = "grocery", key = 'category_comp')  
       eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 30, key = 'eta_comp')
@@ -170,4 +171,5 @@ if uploaded_file is not None:
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
         st.write(f"Ожидаемый CPO системы: {round(c2, 1)}₽")
+        st.write(f"*CPO считается в тестовом режиме")
 
