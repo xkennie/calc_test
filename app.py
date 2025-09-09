@@ -21,16 +21,16 @@ def calculator_retention(df, #data
     log_cancel = cancel_share*0.6
     other_cancel = cancel_share*0.4
     no_cancel = 1-cancel_share
-    if eta > 0:
+    if eta > -1:
         data["right_eta"] = eta
-    if cte > 0:
+    if cte > -1:
         data["duration_click_to_eat"] = cte
-    if total_cost > 0:    
+    if total_cost > -1:    
         data["total_cost"] = total_cost/100
-    if cancel_share > 0: 
+    if cancel_share > -1: 
         data["cancel_tag"] = np.random.choice([' ', 'Логистические отмены', 'Прочее'],
                                                 size=data.shape[0], p=[no_cancel,log_cancel,other_cancel])
-    if late_share > 0:
+    if late_share > -1:
         data["late"] = np.random.choice([0, late_min],
                                                 size=data.shape[0], p=[1-late_share,late_share])
 
@@ -73,8 +73,25 @@ def calculator_retention(df, #data
     data = ohe.transform(data)
 
     y_test_pred = model.predict(data)
-    retens = round(100*y_test_pred.mean(), 1)
-    print(f"Ожидаемый ретеншн при заданных вводных: {round(100*y_test_pred.mean(), 1)}%")
+    if total_cost == 0:
+      retens = round(100*y_test_pred.mean()*(1-0.303), 1) #срезается конверсии до заказа
+    elif total_cost > 0 and total_cost <= 50:
+      retens = round(100*y_test_pred.mean()*(1+0.084), 1)
+    elif total_cost > 50 and total_cost <= 100:
+      retens = round(100*y_test_pred.mean()*(1+0.073), 1)
+    elif total_cost > 100 and total_cost <= 150:
+      retens = round(100*y_test_pred.mean()*(1+0.085), 1)
+    elif total_cost > 150 and total_cost <= 200:
+      retens = round(100*y_test_pred.mean()*(1-0.043), 1)
+    elif total_cost > 200 and total_cost <= 300:
+      retens = round(100*y_test_pred.mean()*(1-0.089), 1)
+    elif total_cost > 300 and total_cost <= 400:
+      retens = round(100*y_test_pred.mean()*(1-0.222), 1)
+    elif total_cost > 400:
+      retens = round(100*y_test_pred.mean()*(1-0.288), 1)
+    else:
+      retens = round(100*y_test_pred.mean(), 1)
+    print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
     
     orders = 1600000
     SHp = 33
