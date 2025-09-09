@@ -102,7 +102,7 @@ def calculator_retention(df, #data
 
 #warnings.filterwarnings('ignore')
 #lgb_model = joblib.load('lgb.pkl')
-with open('lgb.pkl', 'rb') as f:
+with open('new_lgb.pkl', 'rb') as f: #changed model
     lgb_model = pickle.load(f)
 with open('one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
