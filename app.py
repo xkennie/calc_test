@@ -8,7 +8,7 @@ import streamlit as st
 from category_encoders.one_hot import OneHotEncoder
 
 def calculator_retention(df, #data 
-                        order_number,
+                        #order_number,
                         eta, #ETA
                         cte, #СТЕ (оставить распределение из выборки, можно 86ести руками)
                         total_cost, #Стоимость доставки
@@ -22,8 +22,8 @@ def calculator_retention(df, #data
     log_cancel = cancel_share*0.6
     other_cancel = cancel_share*0.4
     no_cancel = 1-cancel_share
-    if order_number > -1:
-      data["order_number"] = order_number
+    #if order_number > -1:
+    #  data["order_number"] = order_number
     if eta > -1:
         data["right_eta"] = eta
     if cte > -1:
@@ -147,7 +147,7 @@ if uploaded_file is not None:
     #st.dataframe(df)
     col1, col2 = st.columns(2)
     with col1:
-      order_number_c1 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_main')
+      #order_number_c1 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_main')
       category_setting_c1 = st.text_input("Категория ритейлера (all/rte/grocery)", value = "rte", key = 'category_main')
       eta_setting_c1 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 35, key = 'eta_main')
       cte_setting_c1 = st.text_input("Таргет CTE", value = 40, key = 'cte_main')
@@ -158,7 +158,7 @@ if uploaded_file is not None:
       
       if st.checkbox("Выполнить расчёт: основной"):
         r1, c1 = calculator_retention(df = df, #data 
-                          order_number = eval(order_number_c1),
+                          #order_number = eval(order_number_c1),
                           eta = eval(eta_setting_c1), #ETA
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
                           total_cost = eval(total_cost_setting_c1), #Стоимость доставки
@@ -172,7 +172,7 @@ if uploaded_file is not None:
         st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
         st.write(f"*CPO считается в тестовом режиме")
     with col2:
-      order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
+      #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
       category_setting_c2 = st.text_input("Категория ритейлера", value = "grocery", key = 'category_comp')  
       eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 30, key = 'eta_comp')
       cte_setting_c2 = st.text_input("Таргет CTE", value = 35, key = 'cte_comp')
@@ -183,7 +183,7 @@ if uploaded_file is not None:
 
       if st.checkbox("Выполнить расчёт: сравнение"):
         r2, c2 = calculator_retention(df = df, #data 
-                          order_number = eval(order_number_c2),
+                          #order_number = eval(order_number_c2),
                           eta = eval(eta_setting_c2), #ETA
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
                           total_cost = eval(total_cost_setting_c2), #Стоимость доставки
