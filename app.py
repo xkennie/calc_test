@@ -10,7 +10,7 @@ from category_encoders.one_hot import OneHotEncoder
 def calculator_retention(df, #data 
                         #order_number,
                         eta, #ETA
-                        cte, #СТЕ (оставить распределение из выборки, можно 86ести руками)
+                        cte, #СТЕ (оставить распределение из выборки, можно ввести руками)
                         total_cost, #Стоимость доставки
                         cancel_share, #Доля отмен
                         late_min, #Опоздания, в минутах
@@ -40,19 +40,30 @@ def calculator_retention(df, #data
 
     #X_test_new['repeated_or_new'] = np.random.choice(['repeated', 'new'], size=1000000, p=[0.97,0.03])
 
-    if retailer_category == 'all':
-      data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
-                                                  size=data.shape[0], p=[0.7,0.21, 0.09])
-      data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
-                                                size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
+    #data['device_type'] = np.random.choice(['mobile', 'desktop'],
+    #                                            size=data.shape[0], p=[0.96,0.04])
 
+    #data['prime_flg'] = np.random.choice([1, 0],
+     #                                           size=data.shape[0], p=[0.43,0.57])
+
+    #data['loyal_user_flg'] = np.random.choice(['loyal', 'not_loyal'],
+    #                                            size=data.shape[0], p=[0.66,0.34])
+
+    #data['os'] = np.random.choice(['android', 'ios', 'windows'],
+    #                                            size=data.shape[0], p=[0.54, 0.41, 0.05])
+    if retailer_category == 'all':
+        data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
+                                                  size=data.shape[0], p=[0.7,0.21, 0.09])
+        data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
+                                                size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
+    
     elif retailer_category == 'rte':
-      data['retailer_category_name'] = retailer_category
-      data['retailer_name'] = np.random.choice(['вкусно - и точка', "rostic's", 'Прочее'],
+        data['retailer_category_name'] = retailer_category
+        data['retailer_name'] = np.random.choice(['вкусно - и точка', "rostic's", 'Прочее'],
                                                 size=data.shape[0], p=[0.175, 0.15, 0.675])
     elif retailer_category == 'grocery':
-      data['retailer_category_name'] = retailer_category
-      data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'Прочее'],
+        data['retailer_category_name'] = retailer_category
+        data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'Прочее'],
                                                 size=data.shape[0], p=[0.39, 0.2, 0.1, 0.31])
 
     data["tenant_id"] = 'sbermarket'
@@ -61,24 +72,24 @@ def calculator_retention(df, #data
 
     y_test_pred = model.predict(data)
     if total_cost == 0:
-      retens = round(100*y_test_pred.mean()*(1-0.303), 1) #срезается конверсии до заказа
+        retens = round(100*y_test_pred.mean()*(1-0.303), 1) #срезается конверсии до заказа
     #elif total_cost > 0 and total_cost <= 50:
-    #  retens = round(100*y_test_pred.mean()*(1+0.084), 1)
+    #    retens = round(100*y_test_pred.mean()*(1+0.084), 1)
     #elif total_cost > 50 and total_cost <= 100:
-    #  retens = round(100*y_test_pred.mean()*(1+0.073), 1)
+    #    retens = round(100*y_test_pred.mean()*(1+0.073), 1)
     #elif total_cost > 100 and total_cost <= 150:
-    #  retens = round(100*y_test_pred.mean()*(1+0.085), 1)
+    #    retens = round(100*y_test_pred.mean()*(1+0.085), 1)
     elif total_cost > 150 and total_cost <= 200:
-      retens = round(100*y_test_pred.mean()*(1-0.043), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.043), 1)
     elif total_cost > 200 and total_cost <= 300:
-      retens = round(100*y_test_pred.mean()*(1-0.089), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.089), 1)
     elif total_cost > 300 and total_cost <= 400:
-      retens = round(100*y_test_pred.mean()*(1-0.222), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.222), 1)
     elif total_cost > 400:
-      retens = round(100*y_test_pred.mean()*(1-0.288), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.288), 1)
     else:
-      retens = round(100*y_test_pred.mean(), 1)
-    print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
+        retens = round(100*y_test_pred.mean(), 3)
+    #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
     
     orders = 1600000
     SHp = 33
@@ -100,13 +111,13 @@ def calculator_retention(df, #data
     else:
         total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
     
-    print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
+    #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
     return retens, total_cpo
     
 
 #warnings.filterwarnings('ignore')
 #lgb_model = joblib.load('lgb.pkl')
-with open('new_lgb.pkl', 'rb') as f: #changed model
+with open('fixed_lgb.pkl', 'rb') as f: #changed model
     lgb_model = pickle.load(f)
 with open('one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
