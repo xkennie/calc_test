@@ -88,7 +88,7 @@ def calculator_retention(df, #data
     elif total_cost > 400:
         retens = round(100*y_test_pred.mean()*(1-0.288), 1)
     else:
-        retens = round(100*y_test_pred.mean(), 3)
+        retens = round(100*y_test_pred.mean(), 1)
     #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
     
     orders = 1600000
