@@ -40,17 +40,6 @@ def calculator_retention(df, #data
 
     #X_test_new['repeated_or_new'] = np.random.choice(['repeated', 'new'], size=1000000, p=[0.97,0.03])
 
-    data['device_type'] = np.random.choice(['mobile', 'desktop'],
-                                                size=data.shape[0], p=[0.96,0.04])
-
-    data['prime_flg'] = np.random.choice([1, 0],
-                                                size=data.shape[0], p=[0.43,0.57])
-
-    data['loyal_user_flg'] = np.random.choice(['loyal', 'not_loyal'],
-                                                size=data.shape[0], p=[0.66,0.34])
-
-    data['os'] = np.random.choice(['android', 'ios', 'windows'],
-                                                size=data.shape[0], p=[0.54, 0.41, 0.05])
     if retailer_category == 'all':
       data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
                                                   size=data.shape[0], p=[0.7,0.21, 0.09])
@@ -65,11 +54,6 @@ def calculator_retention(df, #data
       data['retailer_category_name'] = retailer_category
       data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'Прочее'],
                                                 size=data.shape[0], p=[0.39, 0.2, 0.1, 0.31])
-    
-
-
-    data['retailer_name'] = np.random.choice(['пятерочка', 'магнит', 'перекресток', 'вкусно - и точка', "rostic's", 'Прочее'],
-                                                size=data.shape[0], p=[0.33,0.18, 0.09, 0.07, 0.06, 0.27])
 
     data["tenant_id"] = 'sbermarket'
 
