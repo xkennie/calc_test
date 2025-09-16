@@ -121,7 +121,63 @@ with open('fixed_lgb.pkl', 'rb') as f: #changed model
     lgb_model = pickle.load(f)
 with open('one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
-    
+
+### Модели по городам
+with open('voronezh_lgb.pkl', 'rb') as f: #changed model
+    voronezh_model = pickle.load(f)
+with open('volgograd_lgb.pkl', 'rb') as f: #changed model
+    volgograd_model = pickle.load(f)
+with open('ekaterinburg_lgb.pkl', 'rb') as f: #changed model
+    ekaterinburg_model = pickle.load(f)
+with open('kazan_lgb.pkl', 'rb') as f: #changed model
+    kazan_model = pickle.load(f)
+with open('krasnodar_lgb.pkl', 'rb') as f: #changed model
+    krasnodar_model = pickle.load(f)
+with open('krasnoyarsk_lgb.pkl', 'rb') as f: #changed model
+    krasnoyarsk_model = pickle.load(f)
+with open('moscow_lgb.pkl', 'rb') as f: #changed model
+    moscow_model = pickle.load(f)
+with open('nino_lgb.pkl', 'rb') as f: #changed model
+    nino_model = pickle.load(f)
+with open('novosibirsk_lgb.pkl', 'rb') as f: #changed model
+    novosibirsk_model = pickle.load(f)
+with open('omsk_lgb.pkl', 'rb') as f: #changed model
+    omsk_model = pickle.load(f)
+with open('perm_lgb.pkl', 'rb') as f: #changed model
+    perm_model = pickle.load(f)
+with open('rnd_lgb.pkl', 'rb') as f: #changed model
+    rnd_model = pickle.load(f)
+with open('samara_lgb.pkl', 'rb') as f: #changed model
+    samara_model = pickle.load(f)
+with open('spb_lgb.pkl', 'rb') as f: #changed model
+    spb_model = pickle.load(f)
+with open('tumen_lgb.pkl', 'rb') as f: #changed model
+    tumen_model = pickle.load(f)
+with open('ufa_lgb.pkl', 'rb') as f: #changed model
+    ufa_model = pickle.load(f)
+with open('chelyabinsk_lgb.pkl', 'rb') as f: #changed model
+    chelyabinsk_model = pickle.load(f)
+
+models = {
+    'Волгоград': volgograd_model
+    ,'Воронеж': voronezh_model
+    ,'Екатеринбург': ekaterinburg_model 
+    ,'Казань': kazan_model  
+    ,'Краснодар': krasnodar_model
+    ,'Красноярск': krasnoyarsk_model 
+    ,'Москва': moscow_model
+    ,'Нижний Новгород': nino_model 
+    ,'Новосибирск': novosibirsk_model 
+    ,'Омск': omsk_model
+    ,'Пермь': perm_model
+    ,'Ростов-на-Дону': rnd_model
+    ,'Самара': samara_model 
+    ,'Санкт-Петербург': spb_model 
+    ,'Тюмень': tumen_model  
+    ,'Уфа': ufa_model 
+    ,'Челябинск': chelyabinsk_model
+    ,'Страна': lgb_model
+}
 st.set_page_config(page_title="Retention&CPO Calculator", layout="wide")
 
 st.title("Calculator")
@@ -143,6 +199,7 @@ if uploaded_file is not None:
     col1, col2 = st.columns(2)
     with col1:
       #order_number_c1 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_main')
+      city_c1 = st.text_input("Город (город топ-17 или Страна)", value = "Страна", key = 'city_main')
       category_setting_c1 = st.text_input("Категория ритейлера (all/rte/grocery)", value = "rte", key = 'category_main')
       eta_setting_c1 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 35, key = 'eta_main')
       cte_setting_c1 = st.text_input("Таргет CTE", value = 40, key = 'cte_main')
@@ -161,13 +218,14 @@ if uploaded_file is not None:
                           late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
                           late_share = eval(late_share_setting_c1), 
                           retailer_category = category_setting_c1,
-                          model = lgb_model,#model+encoder
+                          model = models[city_c1],#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
         st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
         st.write(f"*CPO считается в тестовом режиме")
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
+      city_c2 = st.text_input("Город (город топ-17 или Страна)", value = "Москва", key = 'city_comp')
       category_setting_c2 = st.text_input("Категория ритейлера", value = "grocery", key = 'category_comp')  
       eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 30, key = 'eta_comp')
       cte_setting_c2 = st.text_input("Таргет CTE", value = 35, key = 'cte_comp')
@@ -186,7 +244,7 @@ if uploaded_file is not None:
                           late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
                           late_share = eval(late_share_setting_c2),
                           retailer_category = category_setting_c2,
-                          model = lgb_model,#model+encoder
+                          model = models[city_c2],#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
         st.write(f"Ожидаемый CPO системы: {round(c2, 1)}₽")
