@@ -202,11 +202,11 @@ if uploaded_file is not None:
       city_c1 = st.text_input("Город (город топ-17 или Страна)", value = "Страна", key = 'city_main')
       category_setting_c1 = st.text_input("Категория ритейлера (all/rte/grocery)", value = "rte", key = 'category_main')
       eta_setting_c1 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 35, key = 'eta_main')
-      cte_setting_c1 = st.text_input("Таргет CTE", value = 40, key = 'cte_main')
-      late_minutes_setting_c1 = st.text_input("Таргет минут опоздания", value = 10, key = 'late_minutes_main')
-      late_share_setting_c1 = st.text_input("Таргет доли опозданий", value = 0.1, key = 'late_share_main')
-      total_cost_setting_c1 = st.text_input("Таргет стоимости доставки", value = 100, key = 'total_cost_main')
-      cancel_share_setting_c1 = st.text_input("Таргет доли отмен", value = 0.05, key = 'cancel_share_main')
+      cte_setting_c1 = st.text_input("Таргет CTE (20-90)", value = 40, key = 'cte_main')
+      late_minutes_setting_c1 = st.text_input("Таргет минут опоздания (0-30)", value = 10, key = 'late_minutes_main')
+      late_share_setting_c1 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.1, key = 'late_share_main')
+      total_cost_setting_c1 = st.text_input("Таргет стоимости доставки (0-500)", value = 100, key = 'total_cost_main')
+      cancel_share_setting_c1 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.05, key = 'cancel_share_main')
       
       if st.checkbox("Выполнить расчёт: основной"):
         r1, c1 = calculator_retention(df = df, #data 
@@ -226,13 +226,13 @@ if uploaded_file is not None:
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
       city_c2 = st.text_input("Город (город топ-17 или Страна)", value = "Москва", key = 'city_comp')
-      category_setting_c2 = st.text_input("Категория ритейлера", value = "grocery", key = 'category_comp')  
-      eta_setting_c2 = st.text_input("Таргет правой границы ЕТА", value = 30, key = 'eta_comp')
-      cte_setting_c2 = st.text_input("Таргет CTE", value = 35, key = 'cte_comp')
-      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания", value = 15, key = 'late_minutes_comp')
-      late_share_setting_c2 = st.text_input("Таргет доли опозданий", value = 0.05, key = 'late_share_comp')
-      total_cost_setting_c2 = st.text_input("Таргет стоимости доставки", value = 70, key = 'total_cost_comp')
-      cancel_share_setting_c2 = st.text_input("Таргет доли отмен", value = 0.07, key = 'cancel_share_comp')
+      category_setting_c2 = st.text_input("Категория ритейлера (all/grocery/rte)", value = "grocery", key = 'category_comp')  
+      eta_setting_c2 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 30, key = 'eta_comp')
+      cte_setting_c2 = st.text_input("Таргет CTE (20-90)", value = 35, key = 'cte_comp')
+      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания (0-30)", value = 15, key = 'late_minutes_comp')
+      late_share_setting_c2 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.05, key = 'late_share_comp')
+      total_cost_setting_c2 = st.text_input("Таргет стоимости доставки (0-500)", value = 70, key = 'total_cost_comp')
+      cancel_share_setting_c2 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.07, key = 'cancel_share_comp')
 
       if st.checkbox("Выполнить расчёт: сравнение"):
         r2, c2 = calculator_retention(df = df, #data 
