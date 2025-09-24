@@ -72,7 +72,7 @@ def calculator_retention(df, #data
 
     y_test_pred = model.predict(data)
     if total_cost == 0:
-        retens = round(100*y_test_pred.mean()*(1-0.303), 1) #срезается конверсии до заказа
+        retens = round(100*y_test_pred.mean()*(1-0.303), 2) #срезается конверсии до заказа
     #elif total_cost > 0 and total_cost <= 50:
     #    retens = round(100*y_test_pred.mean()*(1+0.084), 1)
     #elif total_cost > 50 and total_cost <= 100:
@@ -80,15 +80,15 @@ def calculator_retention(df, #data
     #elif total_cost > 100 and total_cost <= 150:
     #    retens = round(100*y_test_pred.mean()*(1+0.085), 1)
     elif total_cost > 150 and total_cost <= 200:
-        retens = round(100*y_test_pred.mean()*(1-0.043), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.043), 2)
     elif total_cost > 200 and total_cost <= 300:
-        retens = round(100*y_test_pred.mean()*(1-0.089), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.089), 2)
     elif total_cost > 300 and total_cost <= 400:
-        retens = round(100*y_test_pred.mean()*(1-0.222), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.222), 2)
     elif total_cost > 400:
-        retens = round(100*y_test_pred.mean()*(1-0.288), 1)
+        retens = round(100*y_test_pred.mean()*(1-0.288), 2)
     else:
-        retens = round(100*y_test_pred.mean(), 1)
+        retens = round(100*y_test_pred.mean(), 2)
     #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
     
     orders = 1600000
