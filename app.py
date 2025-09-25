@@ -108,14 +108,14 @@ def calculator_retention(df, #data
     #часть с CPO
     orders = 1600000
     SHp = 30
-    CAC_cour = 5500
-    churn_rate = 0.5
+    CAC_cour = 7000
+    newbie_rate = 0.42
     
     if cte > -1:
         SH_per_order_need = cte/(0.003*(2.176*cte-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
-        heads_hire = heads_need * churn_rate
+        heads_hire = heads_need * newbie_rate
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
@@ -127,7 +127,7 @@ def calculator_retention(df, #data
         SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
-        heads_hire = heads_need * churn_rate
+        heads_hire = heads_need * newbie_rate
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
@@ -139,7 +139,7 @@ def calculator_retention(df, #data
         SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
-        heads_hire = heads_need * churn_rate
+        heads_hire = heads_need * newbie_rate
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
@@ -150,7 +150,7 @@ def calculator_retention(df, #data
         SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
-        heads_hire = heads_need * churn_rate
+        heads_hire = heads_need * newbie_rate
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
