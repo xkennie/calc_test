@@ -83,28 +83,28 @@ def calculator_retention(df, #data
     else:
         retens = round(100*y_test_pred.mean(), 1)
     #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
-    '''
+    
     #Часть с CPO, неактуальная
-    orders = 1600000
-    SHp = 33
-    CAC_cour = 5300
-    churn_rate = 0.55
-    util = 0.75
+    #orders = 1600000
+    #SHp = 33
+    #CAC_cour = 5300
+    #churn_rate = 0.55
+    #util = 0.75
 
-    if eta > 0 and cte == 0:
-        cpo_cte = (1-late_share)*eta+late_share*(eta+late_min)
-    else:
-        cpo_cte = cte
+    #if eta > 0 and cte == 0:
+    #    cpo_cte = (1-late_share)*eta+late_share*(eta+late_min)
+    #else:
+    #    cpo_cte = cte
     
-    sh_needed = orders*(1-cancel_share)*(cpo_cte/util)/60
-    hire_costs = CAC_cour*churn_rate*(sh_needed/SHp)
-    hire_cpo = hire_costs/orders
+    #sh_needed = orders*(1-cancel_share)*(cpo_cte/util)/60
+    #hire_costs = CAC_cour*churn_rate*(sh_needed/SHp)
+    #hire_cpo = hire_costs/orders
     
-    if total_cost > 0:
-        total_cpo = hire_cpo+total_cost
-    else:
-        total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
-   '''
+    #if total_cost > 0:
+    #    total_cpo = hire_cpo+total_cost
+    #else:
+    #    total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
+   
     #часть с CPO
     orders = 1600000
     SHp = 30
