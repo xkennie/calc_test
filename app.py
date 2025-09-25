@@ -8,22 +8,23 @@ import streamlit as st
 from category_encoders.one_hot import OneHotEncoder
 
 def calculator_retention(df, #data 
-                        #order_number,
                         eta, #ETA
                         cte, #СТЕ (оставить распределение из выборки, можно ввести руками)
                         total_cost, #Стоимость доставки
                         cancel_share, #Доля отмен
                         late_min, #Опоздания, в минутах
-                        late_share,
-                        retailer_category,#Доля заказов с опозданием
+                        late_share, #Доля заказов с опозданием
+                        retailer_category, #Вертикаль
                         model,#model+encoder
                         ohe):
     data = df.copy()
-    log_cancel = cancel_share*0.6
+    np.random.seed(42)
+    log_cancel = cancel_share*0.6 #раскидываю типы отмен по распределению
     other_cancel = cancel_share*0.4
     no_cancel = 1-cancel_share
-    #if order_number > -1:
-    #  data["order_number"] = order_number
+    
+    #хардом ставлю инпуты в выборку
+    #даю возможность не указывать параметр, используя -1 -- тогда он останется по распределению в выборке
     if eta > -1:
         data["right_eta"] = eta
     if cte > -1:
@@ -38,19 +39,7 @@ def calculator_retention(df, #data
                                                 size=data.shape[0], p=[1-late_share,late_share])
 
 
-    #X_test_new['repeated_or_new'] = np.random.choice(['repeated', 'new'], size=1000000, p=[0.97,0.03])
-
-    #data['device_type'] = np.random.choice(['mobile', 'desktop'],
-    #                                            size=data.shape[0], p=[0.96,0.04])
-
-    #data['prime_flg'] = np.random.choice([1, 0],
-     #                                           size=data.shape[0], p=[0.43,0.57])
-
-    #data['loyal_user_flg'] = np.random.choice(['loyal', 'not_loyal'],
-    #                                            size=data.shape[0], p=[0.66,0.34])
-
-    #data['os'] = np.random.choice(['android', 'ios', 'windows'],
-    #                                            size=data.shape[0], p=[0.54, 0.41, 0.05])
+    #для корректного использования переменных категории/ритейлера генерирую их по распределению
     if retailer_category == 'all':
         data['retailer_category_name'] = np.random.choice(['grocery', 'rte', 'other'],
                                                   size=data.shape[0], p=[0.7,0.21, 0.09])
@@ -70,9 +59,13 @@ def calculator_retention(df, #data
 
     data = ohe.transform(data)
 
+    #предикты для всей выборки
     y_test_pred = model.predict(data)
+    
+    #срезается конверсия на экране чекаута, до заказа
+    #по сути заглушка для очень больших значений стоимости доставки, коэффициенты брал из ресёрча продуктовой команды
     if total_cost == 0:
-        retens = round(100*y_test_pred.mean()*(1-0.303), 2) #срезается конверсии до заказа
+        retens = round(100*y_test_pred.mean()*(1-0.303), 1) 
     #elif total_cost > 0 and total_cost <= 50:
     #    retens = round(100*y_test_pred.mean()*(1+0.084), 1)
     #elif total_cost > 50 and total_cost <= 100:
@@ -80,17 +73,18 @@ def calculator_retention(df, #data
     #elif total_cost > 100 and total_cost <= 150:
     #    retens = round(100*y_test_pred.mean()*(1+0.085), 1)
     elif total_cost > 150 and total_cost <= 200:
-        retens = round(100*y_test_pred.mean()*(1-0.043), 2)
+        retens = round(100*y_test_pred.mean()*(1-0.043), 1)
     elif total_cost > 200 and total_cost <= 300:
-        retens = round(100*y_test_pred.mean()*(1-0.089), 2)
+        retens = round(100*y_test_pred.mean()*(1-0.089), 1)
     elif total_cost > 300 and total_cost <= 400:
-        retens = round(100*y_test_pred.mean()*(1-0.222), 2)
+        retens = round(100*y_test_pred.mean()*(1-0.222), 1)
     elif total_cost > 400:
-        retens = round(100*y_test_pred.mean()*(1-0.288), 2)
+        retens = round(100*y_test_pred.mean()*(1-0.288), 1)
     else:
-        retens = round(100*y_test_pred.mean(), 2)
+        retens = round(100*y_test_pred.mean(), 1)
     #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
-    
+    """
+    #Часть с CPO, неактуальная
     orders = 1600000
     SHp = 33
     CAC_cour = 5300
@@ -110,9 +104,67 @@ def calculator_retention(df, #data
         total_cpo = hire_cpo+total_cost
     else:
         total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
+   """
+    #часть с CPO
+    orders = 1600000
+    SHp = 30
+    CAC_cour = 5500
+    churn_rate = 0.5
+    
+    if cte > -1:
+        SH_per_order_need = cte/(0.003*(2.176*cte-75.7585) + 0.547)/60
+        SH_need = SH_per_order_need * orders
+        heads_need = SH_need / SHp
+        heads_hire = heads_need * churn_rate
+        hire_costs = heads_hire * CAC_cour
+        hire_cpo = hire_costs/orders
+        
+        direct_cpo = -0.0429 * cte * cte + 7.2458 * cte - 41.038
+        
+    elif eta > -1 and late_min > -1 and late_share > -1:
+        cte_calc = eta+late_share*late_min
+        
+        SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_need = SH_per_order_need * orders
+        heads_need = SH_need / SHp
+        heads_hire = heads_need * churn_rate
+        hire_costs = heads_hire * CAC_cour
+        hire_cpo = hire_costs/orders
+        
+        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+        
+    elif cte <= -1 and eta <= -1:
+        cte_calc = 45
+        
+        SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_need = SH_per_order_need * orders
+        heads_need = SH_need / SHp
+        heads_hire = heads_need * churn_rate
+        hire_costs = heads_hire * CAC_cour
+        hire_cpo = hire_costs/orders
+        
+        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+    else:
+        cte_calc = 45
+        
+        SH_per_order_need = cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_need = SH_per_order_need * orders
+        heads_need = SH_need / SHp
+        heads_hire = heads_need * churn_rate
+        hire_costs = heads_hire * CAC_cour
+        hire_cpo = hire_costs/orders
+        
+        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+    
+    total_cpo = direct_cpo + hire_cpo
+    
+    #print(f"Ожидаемая потребность в найме в CPO: {round(hire_cpo, 0)}₽")
+    #print(f"Ожидаемый CPO директ: {round(direct_cpo, 0)}₽")    
     
     #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
-    return retens, total_cpo
+    #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
+    #возвращаем ожидаемый ретеншн системы и оценочный CPO
+    return retens, hire_cpo, direct_cpo, total_cpo
     
 
 #warnings.filterwarnings('ignore')
@@ -209,7 +261,7 @@ if uploaded_file is not None:
       cancel_share_setting_c1 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.05, key = 'cancel_share_main')
       
       if st.checkbox("Выполнить расчёт: основной"):
-        r1, c1 = calculator_retention(df = df, #data 
+        r1, h1, d1, t1 = calculator_retention(df = df, #data 
                           #order_number = eval(order_number_c1),
                           eta = eval(eta_setting_c1), #ETA
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
@@ -221,8 +273,10 @@ if uploaded_file is not None:
                           model = models[city_c1],#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
-        st.write(f"Ожидаемый CPO системы: {round(c1, 1)}₽")
-        st.write(f"*CPO считается в тестовом режиме")
+        st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
+        st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
+        st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
+        st.write(f"*CPO считается для страны")
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
       city_c2 = st.text_input("Город (город топ-17 или Страна)", value = "Москва", key = 'city_comp')
@@ -235,7 +289,7 @@ if uploaded_file is not None:
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.07, key = 'cancel_share_comp')
 
       if st.checkbox("Выполнить расчёт: сравнение"):
-        r2, c2 = calculator_retention(df = df, #data 
+        r2, h2, d2, t2 = calculator_retention(df = df, #data 
                           #order_number = eval(order_number_c2),
                           eta = eval(eta_setting_c2), #ETA
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
@@ -247,6 +301,8 @@ if uploaded_file is not None:
                           model = models[city_c2],#model+encoder
                           ohe = ohe)
         st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
-        st.write(f"Ожидаемый CPO системы: {round(c2, 1)}₽")
-        st.write(f"*CPO считается в тестовом режиме")
+        st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
+        st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
+        st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
+        st.write(f"*CPO считается для страны")
 
