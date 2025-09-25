@@ -83,7 +83,7 @@ def calculator_retention(df, #data
     else:
         retens = round(100*y_test_pred.mean(), 1)
     #print(f"Ожидаемый ретеншн при заданных вводных: {retens}%")
-    """
+    '''
     #Часть с CPO, неактуальная
     orders = 1600000
     SHp = 33
@@ -104,7 +104,7 @@ def calculator_retention(df, #data
         total_cpo = hire_cpo+total_cost
     else:
         total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
-   """
+   '''
     #часть с CPO
     orders = 1600000
     SHp = 30
