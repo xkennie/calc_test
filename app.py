@@ -283,7 +283,7 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
           st.write(f"*CPO считается для страны")
         if city_c1 != 'Страна':
-          r1, h1, d1, t1 = calculator_retention(df = df[df['city_name'] == city_c1][['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r1, h1, d1, t1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
                 'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
                 'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
                 'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
@@ -337,7 +337,7 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
           st.write(f"*CPO считается для страны")
         if city_c2 != 'Страна':
-          r2, h2, d2, t2 = calculator_retention(df = df[df['city_name'] == city_c2][['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r2, h2, d2, t2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
               'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
               'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
               'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
