@@ -112,7 +112,7 @@ def calculator_retention(df, #data
     newbie_rate = 0.42
     
     if cte > -1:
-        SH_per_order_need = 0.55*cte/(0.003*(2.176*cte-75.7585) + 0.547)/60
+        SH_per_order_need = 24/(0.003*(2.176*cte-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
         heads_hire = heads_need * newbie_rate
@@ -124,7 +124,7 @@ def calculator_retention(df, #data
     elif eta > -1 and late_min > -1 and late_share > -1:
         cte_calc = eta+late_share*late_min
         
-        SH_per_order_need = 0.55*cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_per_order_need = 24/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
         heads_hire = heads_need * newbie_rate
@@ -136,7 +136,7 @@ def calculator_retention(df, #data
     elif cte <= -1 and eta <= -1:
         cte_calc = 45
         
-        SH_per_order_need = 0.55*cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_per_order_need = 24/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
         heads_hire = heads_need * newbie_rate
@@ -147,7 +147,7 @@ def calculator_retention(df, #data
     else:
         cte_calc = 45
         
-        SH_per_order_need = 0.55*cte_calc/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
+        SH_per_order_need = 24/(0.003*(2.176*cte_calc-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
         heads_need = SH_need / SHp
         heads_hire = heads_need * newbie_rate
