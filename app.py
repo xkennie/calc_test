@@ -110,7 +110,9 @@ def calculator_retention(df, #data
     SHp = 30
     CAC_cour = 7000
     newbie_rate = 0.42
-    
+    MPH = 320
+    users = 760000
+    aov = 8600
     if cte > -1:
         SH_per_order_need = 24/(0.003*(2.176*cte-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
@@ -119,7 +121,7 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = -0.0429 * cte * cte + 7.2458 * cte - 41.038
+        direct_cpo = MPH*SH_per_order_need
         
     elif eta > -1 and late_min > -1 and late_share > -1:
         cte_calc = eta+late_share*late_min
@@ -131,7 +133,7 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+        direct_cpo = MPH*SH_per_order_need
         
     elif cte <= -1 and eta <= -1:
         cte_calc = 45
@@ -143,7 +145,7 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+        direct_cpo = MPH*SH_per_order_need
     else:
         cte_calc = 45
         
@@ -154,17 +156,17 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = -0.0429 * cte_calc * cte_calc + 7.2458 * cte_calc - 41.038
+        direct_cpo = MPH*SH_per_order_need
     
     total_cpo = direct_cpo + hire_cpo
-    
+    gmv = 0.01*retens*users*aov/1000000
     #print(f"Ожидаемая потребность в найме в CPO: {round(hire_cpo, 0)}₽")
     #print(f"Ожидаемый CPO директ: {round(direct_cpo, 0)}₽")    
     
     #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
     #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
     #возвращаем ожидаемый ретеншн системы и оценочный CPO
-    return retens, hire_cpo, direct_cpo, total_cpo
+    return retens, hire_cpo, direct_cpo, total_cpo, gmv
     
 
 #warnings.filterwarnings('ignore')
@@ -262,7 +264,7 @@ if uploaded_file is not None:
       
       if st.checkbox("Выполнить расчёт: основной"):
         if city_c1 == 'Страна':
-          r1, h1, d1, t1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
               'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
               'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
               'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
@@ -281,9 +283,10 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
           st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
           st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
+          st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
           st.write(f"*CPO считается для страны")
         if city_c1 != 'Страна':
-          r1, h1, d1, t1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
                 'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
                 'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
                 'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
@@ -302,6 +305,7 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
           st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
           st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
+          st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
           st.write(f"*CPO считается для страны")
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
@@ -316,7 +320,7 @@ if uploaded_file is not None:
 
       if st.checkbox("Выполнить расчёт: сравнение"):
         if city_c2 == 'Страна':
-          r2, h2, d2, t2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
               'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
               'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
               'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
@@ -335,9 +339,10 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
           st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
           st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
+          st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
           st.write(f"*CPO считается для страны")
         if city_c2 != 'Страна':
-          r2, h2, d2, t2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+          r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
               'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
               'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
               'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
@@ -356,5 +361,6 @@ if uploaded_file is not None:
           st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
           st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
           st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
+          st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
           st.write(f"*CPO считается для страны")
         
