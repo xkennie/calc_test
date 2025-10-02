@@ -171,9 +171,9 @@ def calculator_retention(df, #data
 
 #warnings.filterwarnings('ignore')
 #lgb_model = joblib.load('lgb.pkl')
-with open('fixed_lgb.pkl', 'rb') as f: #changed model
+with open('aug_lgb.pkl', 'rb') as f: #changed model
     lgb_model = pickle.load(f)
-with open('one_hot_encoder.pkl', 'rb') as f:
+with open('aug_one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
 
 ### Модели по городам
@@ -287,10 +287,10 @@ if uploaded_file is not None:
           st.write(f"*CPO считается для страны")
         if city_c1 != 'Страна':
           r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-                'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-                'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-                'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-                'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
+              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
+              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
+              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
+              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
                             #order_number = eval(order_number_c1),
                             eta = eval(eta_setting_c1), #ETA
                             cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
