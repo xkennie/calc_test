@@ -19,7 +19,7 @@ def calculator_retention(df, #data
                         ohe,
                         city):
     data = df.copy()
-    if city != 'Страна':
+    if city != 'Страна': #filter city
         data = data[data['city_name'] == city]
         
     data = data[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
