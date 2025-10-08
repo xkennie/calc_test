@@ -16,13 +16,26 @@ def calculator_retention(df, #data
                         late_share, #Доля заказов с опозданием
                         retailer_category, #Вертикаль
                         model,#model+encoder
-                        ohe):
+                        ohe,
+                        city):
     data = df.copy()
+    if city != 'Страна':
+        data = data[data['city_name'] == city]
+        
+    data = data[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
+              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
+              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
+              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city', 'fee_share']] 
     np.random.seed(42)
     log_cancel = cancel_share*0.6 #раскидываю типы отмен по распределению
     other_cancel = cancel_share*0.4
     no_cancel = 1-cancel_share
+    environment_setting = {'Омск': {'orders': 26348, 'users': 14023, 'sh_p': 22.12028518997218, 'mph': 302.98568417301266, 'cac': 14200},
+                           'Страна': {'orders': 1600000, 'users': 760000, 'sh_p': 30, 'mph': 320, 'cac': 7000},
+                           'Самара': {'orders': 28325, 'users': 15429, 'sh_p': 25.54027528722855, 'mph': 286.17744949793234, 'cac': 17500}, 'Воронеж': {'orders': 15760, 'users': 9119, 'sh_p': 33.246466484074496, 'mph': 332.8099072752656, 'cac': 13400}, 'Красноярск': {'orders': 42203, 'users': 20382, 'sh_p': 25.67888789400519, 'mph': 319.4503727831454, 'cac': 14900}, 'Краснодар': {'orders': 53861, 'users': 26180, 'sh_p': 36.17460198082647, 'mph': 279.61018651460904, 'cac': 9000}, 'Уфа': {'orders': 25785, 'users': 14319, 'sh_p': 19.430849565206966, 'mph': 230.81337674648051, 'cac': 20000}, 'Новосибирск': {'orders': 59615, 'users': 28590, 'sh_p': 28.144976899831402, 'mph': 299.2014640481861, 'cac': 16100}, 'Тюмень': {'orders': 39822, 'users': 17081, 'sh_p': 54.21273889158505, 'mph': 308.26935993788135, 'cac': 3700}, 'Ростов-на-Дону': {'orders': 36557, 'users': 19145, 'sh_p': 37.94114273226561, 'mph': 307.580050690035, 'cac': 14300}, 'Екатеринбург': {'orders': 60587, 'users': 30017, 'sh_p': 29.628387084910294, 'mph': 296.44725135645535, 'cac': 22548}, 'Санкт-Петербург': {'orders': 139257, 'users': 65363, 'sh_p': 33.51606552207418, 'mph': 356.3062228931145, 'cac': 18200}, 'Челябинск': {'orders': 27802, 'users': 13824, 'sh_p': 17.208883637740662, 'mph': 263.0693713434905, 'cac': 16000}, 'Москва': {'orders': 355855, 'users': 149260, 'sh_p': 54.38130719093238, 'mph': 348.80240077034074, 'cac': 21200}, 'Пермь': {'orders': 23453, 'users': 12207, 'sh_p': 25.114133484255216, 'mph': 287.2839768858267, 'cac': 13700}, 'Нижний Новгород': {'orders': 16583, 'users': 10207, 'sh_p': 27.815011220147408, 'mph': 300.26184460801244, 'cac': 13100}, 'Волгоград': {'orders': 21793, 'users': 10978, 'sh_p': 43.47757513021616, 'mph': 292.495519982006, 'cac': 29300}, 'Казань': {'orders': 31104, 'users': 17041, 'sh_p': 28.642809057633155, 'mph': 288.4276135448993, 'cac': 18600}}
     
+
     #хардом ставлю инпуты в выборку
     #даю возможность не указывать параметр, используя -1 -- тогда он останется по распределению в выборке
     if eta > -1:
@@ -106,13 +119,14 @@ def calculator_retention(df, #data
     #    total_cpo = hire_cpo+round(data.total_cost.mean()*100, 0) 
    
     #часть с CPO
-    orders = 1600000
-    SHp = 30
-    CAC_cour = 7000
+    orders = environment_setting[city]['orders']
+    users = environment_setting[city]['users']
+    SHp = environment_setting[city]['sh_p']
     newbie_rate = 0.42
-    MPH = 320
-    users = 760000
+    CAC_cour = environment_setting[city]['cac']
     aov = 8600
+    MPH = environment_setting[city]['mph']
+    
     if cte > -1:
         SH_per_order_need = 24/(0.003*(2.176*cte-75.7585) + 0.547)/60
         SH_need = SH_per_order_need * orders
@@ -121,8 +135,9 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = MPH*SH_per_order_need
         
+        direct_cpo = SH_per_order_need*MPH
+        total_cpo = direct_cpo + hire_cpo
     elif eta > -1 and late_min > -1 and late_share > -1:
         cte_calc = eta+late_share*late_min
         
@@ -133,7 +148,8 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = MPH*SH_per_order_need
+        direct_cpo = SH_per_order_need*MPH
+        total_cpo = direct_cpo + hire_cpo
         
     elif cte <= -1 and eta <= -1:
         cte_calc = 45
@@ -145,7 +161,8 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = MPH*SH_per_order_need
+        direct_cpo = SH_per_order_need*MPH
+        total_cpo = direct_cpo + hire_cpo
     else:
         cte_calc = 45
         
@@ -156,9 +173,10 @@ def calculator_retention(df, #data
         hire_costs = heads_hire * CAC_cour
         hire_cpo = hire_costs/orders
         
-        direct_cpo = MPH*SH_per_order_need
+        direct_cpo = SH_per_order_need*MPH
     
-    total_cpo = direct_cpo + hire_cpo
+        total_cpo = direct_cpo + hire_cpo
+        
     gmv = 0.01*retens*users*aov/1000000
     #print(f"Ожидаемая потребность в найме в CPO: {round(hire_cpo, 0)}₽")
     #print(f"Ожидаемый CPO директ: {round(direct_cpo, 0)}₽")    
@@ -166,14 +184,13 @@ def calculator_retention(df, #data
     #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
     #print(f"Ожидаемый CPO системы: {round(total_cpo, 0)}₽")
     #возвращаем ожидаемый ретеншн системы и оценочный CPO
-    return retens, hire_cpo, direct_cpo, total_cpo, gmv
-    
+    return retens, hire_cpo, direct_cpo, total_cpo, gmv    
 
 #warnings.filterwarnings('ignore')
 #lgb_model = joblib.load('lgb.pkl')
-with open('aug_lgb.pkl', 'rb') as f: #changed model
+with open('all_lgb.pkl', 'rb') as f: #changed model
     lgb_model = pickle.load(f)
-with open('aug_one_hot_encoder.pkl', 'rb') as f:
+with open('all_one_hot_encoder.pkl', 'rb') as f:
     ohe = pickle.load(f)
 
 ### Модели по городам
@@ -263,50 +280,29 @@ if uploaded_file is not None:
       cancel_share_setting_c1 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.05, key = 'cancel_share_main')
       
       if st.checkbox("Выполнить расчёт: основной"):
-        if city_c1 == 'Страна':
-          r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
-                            #order_number = eval(order_number_c1),
-                            eta = eval(eta_setting_c1), #ETA
-                            cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                            total_cost = eval(total_cost_setting_c1), #Стоимость доставки
-                            cancel_share = eval(cancel_share_setting_c1), #Доля отмен
-                            late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
-                            late_share = eval(late_share_setting_c1), 
-                            retailer_category = category_setting_c1,
-                            model = models[city_c1],#model+encoder
-                            ohe = ohe)
-          st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
-          st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
-          st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
-          st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
-          st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
-          st.write(f"*CPO считается для страны")
-        if city_c1 != 'Страна':
-          r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
-                            #order_number = eval(order_number_c1),
-                            eta = eval(eta_setting_c1), #ETA
-                            cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                            total_cost = eval(total_cost_setting_c1), #Стоимость доставки
-                            cancel_share = eval(cancel_share_setting_c1), #Доля отмен
-                            late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
-                            late_share = eval(late_share_setting_c1), 
-                            retailer_category = category_setting_c1,
-                            model = models[city_c1],#model+encoder
-                            ohe = ohe)
-          st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
-          st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
-          st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
-          st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
-          st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
-          st.write(f"*CPO считается для страны")
+
+        r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+            'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
+            'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
+            'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
+            'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
+                          #order_number = eval(order_number_c1),
+                          eta = eval(eta_setting_c1), #ETA
+                          cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно ввести руками)
+                          total_cost = eval(total_cost_setting_c1), #Стоимость доставки
+                          cancel_share = eval(cancel_share_setting_c1), #Доля отмен
+                          late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
+                          late_share = eval(late_share_setting_c1), 
+                          retailer_category = category_setting_c1,
+                          model = models[city_c1],#model+encoder
+                          ohe = ohe,
+                          city = city_c1)
+        st.write(f"Ожидаемый ретеншн при заданных вводных: {r1}%")
+        st.write(f"Ожидаемый CPO системы: {round(t1, 1)}₽")
+        st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
+        st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
+        st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
+        st.write(f"*CPO считается для страны")
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
       city_c2 = st.text_input("Город (город топ-17 или Страна)", value = "Москва", key = 'city_comp')
@@ -319,48 +315,27 @@ if uploaded_file is not None:
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.07, key = 'cancel_share_comp')
 
       if st.checkbox("Выполнить расчёт: сравнение"):
-        if city_c2 == 'Страна':
-          r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
-                            #order_number = eval(order_number_c2),
-                            eta = eval(eta_setting_c2), #ETA
-                            cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                            total_cost = eval(total_cost_setting_c2), #Стоимость доставки
-                            cancel_share = eval(cancel_share_setting_c2), #Доля отмен
-                            late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
-                            late_share = eval(late_share_setting_c2),
-                            retailer_category = category_setting_c2,
-                            model = models[city_c2],#model+encoder
-                            ohe = ohe)
-          st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
-          st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
-          st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
-          st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
-          st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
-          st.write(f"*CPO считается для страны")
-        if city_c2 != 'Страна':
-          r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-              'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-              'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-              'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-              'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
-                            #order_number = eval(order_number_c2),
-                            eta = eval(eta_setting_c2), #ETA
-                            cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно 86ести руками)
-                            total_cost = eval(total_cost_setting_c2), #Стоимость доставки
-                            cancel_share = eval(cancel_share_setting_c2), #Доля отмен
-                            late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
-                            late_share = eval(late_share_setting_c2),
-                            retailer_category = category_setting_c2,
-                            model = models[city_c2],#model+encoder
-                            ohe = ohe)
-          st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
-          st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
-          st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
-          st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
-          st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
-          st.write(f"*CPO считается для страны")
+        r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
+            'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
+            'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
+            'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
+            'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
+                          #order_number = eval(order_number_c2),
+                          eta = eval(eta_setting_c2), #ETA
+                          cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно ввести руками)
+                          total_cost = eval(total_cost_setting_c2), #Стоимость доставки
+                          cancel_share = eval(cancel_share_setting_c2), #Доля отмен
+                          late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
+                          late_share = eval(late_share_setting_c2),
+                          retailer_category = category_setting_c2,
+                          model = models[city_c2],#model+encoder
+                          ohe = ohe,
+                          city = city_c2)
+        st.write(f"Ожидаемый ретеншн при заданных вводных: {r2}%")
+        st.write(f"Ожидаемый CPO системы: {round(t2, 1)}₽")
+        st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
+        st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
+        st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
+        st.write(f"*CPO считается для страны")
+
         
