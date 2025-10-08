@@ -298,7 +298,7 @@ if uploaded_file is not None:
         st.write(f"Ожидаемый CPO директ: {round(d1, 1)}₽")
         st.write(f"Ожидаемый кост найма в CPO: {round(h1, 1)}₽")
         st.write(f"Ожидаемый GMV: {round(g1, 1)} млн ₽")
-        st.write(f"*CPO считается для страны")
+        #st.write(f"*CPO считается для страны")
     with col2:
       #order_number_c2 = st.text_input("Номер заказа (-1 = не учитывать)", value = 15, key = 'order_comp')
       city_c2 = st.text_input("Город (город топ-17 или Страна)", value = "Москва", key = 'city_comp')
@@ -328,6 +328,6 @@ if uploaded_file is not None:
         st.write(f"Ожидаемый CPO директ: {round(d2, 1)}₽")
         st.write(f"Ожидаемый кост найма в CPO: {round(h2, 1)}₽")
         st.write(f"Ожидаемый GMV: {round(g2, 1)} млн ₽")
-        st.write(f"*CPO считается для страны")
+        #st.write(f"*CPO считается для страны")
 
         
