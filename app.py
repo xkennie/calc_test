@@ -281,11 +281,7 @@ if uploaded_file is not None:
       
       if st.checkbox("Выполнить расчёт: основной"):
 
-        r1, h1, d1, t1, g1 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-            'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-            'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-            'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-            'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
+        r1, h1, d1, t1, g1 = calculator_retention(df = df, #data 
                           #order_number = eval(order_number_c1),
                           eta = eval(eta_setting_c1), #ETA
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно ввести руками)
@@ -315,11 +311,7 @@ if uploaded_file is not None:
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.07, key = 'cancel_share_comp')
 
       if st.checkbox("Выполнить расчёт: сравнение"):
-        r2, h2, d2, t2, g2 = calculator_retention(df = df[['morning_flg', 'evening_flg', 'new_or_repeated', 'retailer_name', 'device_type', 
-            'os', 'rate', 'tenant_id', 'b2b', 'prime_flg', 'loyal_user_flg', 'retailer_category_name',
-            'logcancel_flg', 'cancel_tag', 'surge_pay', 'duration_click_to_eat', 'spasibo_used',
-            'promo_used', 'total_quantity', 'total', 'total_cost', 'replaced_items_cnt', 'canceled_items_cnt',
-            'distance_to_store', 'isz_flg', 'right_eta', 'late', 'early', 'order_number', 'city']], #data 
+        r2, h2, d2, t2, g2 = calculator_retention(df = df, #data 
                           #order_number = eval(order_number_c2),
                           eta = eval(eta_setting_c2), #ETA
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно ввести руками)
