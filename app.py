@@ -274,8 +274,8 @@ if uploaded_file is not None:
       category_setting_c1 = st.text_input("Категория ритейлера (all/rte/grocery)", value = "rte", key = 'category_main')
       eta_setting_c1 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 35, key = 'eta_main')
       cte_setting_c1 = st.text_input("Таргет CTE (20-90)", value = 40, key = 'cte_main')
-      late_minutes_setting_c1 = st.text_input("Таргет минут опоздания (0-30)", value = 10, key = 'late_minutes_main')
-      late_share_setting_c1 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.1, key = 'late_share_main')
+      #late_minutes_setting_c1 = st.text_input("Таргет минут опоздания (0-30)", value = 10, key = 'late_minutes_main')
+      #late_share_setting_c1 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.1, key = 'late_share_main')
       total_cost_setting_c1 = st.text_input("Таргет стоимости доставки (0-500)", value = 100, key = 'total_cost_main')
       cancel_share_setting_c1 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.05, key = 'cancel_share_main')
       
@@ -287,8 +287,8 @@ if uploaded_file is not None:
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно ввести руками)
                           total_cost = eval(total_cost_setting_c1), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c1), #Доля отмен
-                          late_min = eval(late_minutes_setting_c1), #Опоздания, в минутах
-                          late_share = eval(late_share_setting_c1), 
+                          late_min = 10 #eval(late_minutes_setting_c1), #Опоздания, в минутах
+                          late_share = 0.15 #eval(late_share_setting_c1), 
                           retailer_category = category_setting_c1,
                           model = models[city_c1],#model+encoder
                           ohe = ohe,
@@ -305,8 +305,8 @@ if uploaded_file is not None:
       category_setting_c2 = st.text_input("Категория ритейлера (all/grocery/rte)", value = "grocery", key = 'category_comp')  
       eta_setting_c2 = st.text_input("Таргет правой границы ЕТА (25-90)", value = 30, key = 'eta_comp')
       cte_setting_c2 = st.text_input("Таргет CTE (20-90)", value = 35, key = 'cte_comp')
-      late_minutes_setting_c2 = st.text_input("Таргет минут опоздания (0-30)", value = 15, key = 'late_minutes_comp')
-      late_share_setting_c2 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.05, key = 'late_share_comp')
+      #late_minutes_setting_c2 = st.text_input("Таргет минут опоздания (0-30)", value = 15, key = 'late_minutes_comp')
+      #late_share_setting_c2 = st.text_input("Таргет доли опозданий (0-0.25)", value = 0.05, key = 'late_share_comp')
       total_cost_setting_c2 = st.text_input("Таргет стоимости доставки (0-500)", value = 70, key = 'total_cost_comp')
       cancel_share_setting_c2 = st.text_input("Таргет доли отмен (0-0.3)", value = 0.07, key = 'cancel_share_comp')
 
@@ -317,8 +317,8 @@ if uploaded_file is not None:
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно ввести руками)
                           total_cost = eval(total_cost_setting_c2), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c2), #Доля отмен
-                          late_min = eval(late_minutes_setting_c2), #Опоздания, в минутах
-                          late_share = eval(late_share_setting_c2),
+                          late_min = 10 #eval(late_minutes_setting_c2), #Опоздания, в минутах
+                          late_share = 0.15 #eval(late_share_setting_c2),
                           retailer_category = category_setting_c2,
                           model = models[city_c2],#model+encoder
                           ohe = ohe,
