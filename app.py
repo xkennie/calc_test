@@ -287,8 +287,8 @@ if uploaded_file is not None:
                           cte = eval(cte_setting_c1), #СТЕ (оставить распределение из выборки, можно ввести руками)
                           total_cost = eval(total_cost_setting_c1), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c1), #Доля отмен
-                          late_min = 10 #eval(late_minutes_setting_c1), #Опоздания, в минутах
-                          late_share = 0.15 #eval(late_share_setting_c1), 
+                          late_min = 10, #eval(late_minutes_setting_c1) #Опоздания, в минутах
+                          late_share = 0.15, #eval(late_share_setting_c1),
                           retailer_category = category_setting_c1,
                           model = models[city_c1],#model+encoder
                           ohe = ohe,
@@ -317,8 +317,8 @@ if uploaded_file is not None:
                           cte = eval(cte_setting_c2), #СТЕ (оставить распределение из выборки, можно ввести руками)
                           total_cost = eval(total_cost_setting_c2), #Стоимость доставки
                           cancel_share = eval(cancel_share_setting_c2), #Доля отмен
-                          late_min = 10 #eval(late_minutes_setting_c2), #Опоздания, в минутах
-                          late_share = 0.15 #eval(late_share_setting_c2),
+                          late_min = 10, #eval(late_minutes_setting_c2) #Опоздания, в минутах
+                          late_share = 0.15, #eval(late_share_setting_c2)
                           retailer_category = category_setting_c2,
                           model = models[city_c2],#model+encoder
                           ohe = ohe,
